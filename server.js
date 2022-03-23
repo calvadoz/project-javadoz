@@ -5,6 +5,7 @@ const cors = require("cors");
 
 const app = express();
 const initDiscordBot = require("./discord");
+const addNewCode = require("./outputCode");
 
 app.use(express.json());
 app.use("/static", express.static("public"));
@@ -12,7 +13,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 app.get("/api/healthcheck", (req, res) => {
-  addNewCode("");
+//   addNewCode("");
   res.send("Nothing here.. Just to check if the server is healthy");
 });
 
