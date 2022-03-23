@@ -1,6 +1,16 @@
 require("dotenv").config();
 const javbus = require("node-javbus")();
 const fs = require("fs");
+const express = require("express");
+const helmet = require("helmet");
+const cors = require("cors");
+
+const app = express();
+
+app.use(express.json());
+app.use(express.static("static"));
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 const { Client, Intents } = require("discord.js");
 const bot = new Client({
@@ -24,3 +34,9 @@ bot.on("messageCreate", (msg) => {
     msg.reply("Disruptive code detected, do NOT try it again");
   }
 });
+
+app.get("/api/healthcheck", (req, res) => {
+  res.send("Nothing here.. Just to check if the server is healthy");
+});
+
+app.listen(3000, () => console.log(""));
