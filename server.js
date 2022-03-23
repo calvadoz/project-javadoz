@@ -16,5 +16,5 @@ app.get("/api/healthcheck", (req, res) => {
   res.send("Nothing here.. Just to check if the server is healthy");
 });
 
-app.listen(4000, () => console.log(""));
+app.listen(process.env.PORT || 4000, () => console.log("Server is running"));
 initDiscordBot();
