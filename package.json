@@ -1,0 +1,26 @@
+{
+  "name": "project-javadoz",
+  "version": "1.0.0",
+  "description": "Javadoz bot discord",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/calvadoz/project-javadoz.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/calvadoz/project-javadoz/issues"
+  },
+  "homepage": "https://github.com/calvadoz/project-javadoz#readme",
+  "dependencies": {
+    "axios": "^0.26.1",
+    "discord.js": "^13.6.0",
+    "dotenv": "^16.0.0",
+    "node-javbus": "^0.0.9"
+  }
+}
