@@ -1,4 +1,3 @@
-
 const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
@@ -13,8 +12,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 app.get("/api/healthcheck", (req, res) => {
-//   addNewCode("");
-  res.send("Nothing here.. Just to check if the server is healthy");
+  //   addNewCode("");
+  res.status(200).send("Nothing here.. Just to check if the server is healthy");
 });
 
 app.listen(process.env.PORT || 4000, () => console.log("Server is running"));
