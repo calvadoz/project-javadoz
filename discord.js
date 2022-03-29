@@ -3,7 +3,7 @@ const javbus = require("node-javbus")();
 const fs = require("fs");
 const addNewCode = require("./outputCode");
 const axios = require("axios");
-const totalPages = 156;
+const totalPages = 150;
 
 const initDiscordBot = () => {
   //   const { Client, Intents } = require("discord.js");
