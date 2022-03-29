@@ -11,7 +11,11 @@ const javbus = require("node-javbus")();
 app.use(express.json());
 app.use("/static", express.static("public"));
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 
 app.get("/api/healthcheck", (req, res) => {
   //   addNewCode("");
