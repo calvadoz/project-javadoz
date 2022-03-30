@@ -24,10 +24,11 @@ app.get("/api/healthcheck", (req, res) => {
 
 app.get("/api/roll-movies", async (req, res) => {
   const movies = [];
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 20; i++) {
     const randomPage = Math.floor(Math.random() * 150);
     const randomPageResults = await javbus.page(randomPage);
     const randomizeMovieResult = randomizeAndFetch(randomPageResults);
+    console.log(randomizeMovieResult);
     movies.push({
       id: randomizeMovieResult.id,
       title: randomizeMovieResult.name,
