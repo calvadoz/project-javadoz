@@ -41,6 +41,7 @@ app.get("/api/get-movie-details", async (req, res) => {
     const movie = await getSingleMovie(data[key].movieId);
     movie.requester = data[key].requester;
     movie.timestamp = data[key].timestamp;
+    console.log("Pushing movie ", movie.id)
     movies.push(movie);
   }
   // res.set("Access-Control-Allow-Origin", "https://javbus.com");
