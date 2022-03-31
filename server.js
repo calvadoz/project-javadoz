@@ -13,7 +13,7 @@ const javbus = require("node-javbus")();
 
 app.use(cors());
 app.use(express.json());
-app.use("/static", express.static("public"));
+app.use("/static", express.static("assets", { maxAge: 3600000 }));
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/api/healthcheck", (req, res) => {
@@ -81,7 +81,7 @@ function randomizeAndFetch(codes) {
 }
 
 async function writeFile(coverUrl, movieId) {
-  const fileName = `${__dirname}\\public\\cover\\${movieId.toLowerCase()}.jpg`;
+  const fileName = `${__dirname}\\assets\\${movieId.toLowerCase()}.jpg`;
   try {
     if (fs.existsSync(fileName)) {
       return;
@@ -100,6 +100,8 @@ async function writeFile(coverUrl, movieId) {
     console.error(err);
   }
 }
+
+console.log("DIRNAME: ", __dirname);
 
 app.listen(process.env.PORT || 4000, () => console.log("Server is running"));
 initDiscordBot();
