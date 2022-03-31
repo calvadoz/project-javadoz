@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
+const fs = require("fs");
 
 const app = express();
 const initDiscordBot = require("./discord");
@@ -10,15 +11,10 @@ const axios = require("axios");
 
 const javbus = require("node-javbus")();
 
+app.use(cors());
 app.use(express.json());
 app.use("/static", express.static("public"));
 app.use(express.urlencoded({ extended: true }));
-app.use(
-  cors({
-    origin: "*",
-    optionsSuccessStatus: 200,
-  })
-);
 
 app.get("/api/healthcheck", (req, res) => {
   //   addNewCode("");
@@ -47,6 +43,7 @@ app.get("/api/get-movie-details", async (req, res) => {
     movie.timestamp = data[key].timestamp;
     movies.push(movie);
   }
+  // res.set("Access-Control-Allow-Origin", "https://javbus.com");
   res.send(movies);
 });
 
@@ -59,10 +56,11 @@ async function getSingleMovie(code) {
   movie.cover = javbusResult.cover;
   movie.genre = javbusResult.genre;
   movie.label = javbusResult.label;
-  const thumbReq = await axios.get(movie.cover, {
-    responseType: "arraybuffer",
-  });
-  movie.base64thumb = Buffer.from(thumbReq.data, "binary").toString("base64");
+  writeFile(movie.cover, movie.id);
+  // const thumbReq = await axios.get(movie.cover, {
+  //   responseType: "arraybuffer",
+  // });
+  // movie.base64thumb = Buffer.from(thumbReq.data, "binary").toString("base64");
   return movie;
 }
 
@@ -80,6 +78,27 @@ function randomizeAndFetch(codes) {
     return codes[randomLine];
   }
   return "Bo code liao...";
+}
+
+async function writeFile(coverUrl, movieId) {
+  const fileName = `${__dirname}\\public\\cover\\${movieId.toLowerCase()}.jpg`;
+  try {
+    if (fs.existsSync(fileName)) {
+      return;
+    } else {
+      const thumbReq = await axios.get(coverUrl, {
+        responseType: "arraybuffer",
+      });
+      const data = thumbReq.data;
+      fs.appendFile(fileName, Buffer.from(data), (err) => {
+        if (err) {
+          console.error(err);
+        }
+      });
+    }
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 app.listen(process.env.PORT || 4000, () => console.log("Server is running"));
