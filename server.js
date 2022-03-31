@@ -56,11 +56,11 @@ async function getSingleMovie(code) {
   movie.cover = javbusResult.cover;
   movie.genre = javbusResult.genre;
   movie.label = javbusResult.label;
-  writeFile(movie.cover, movie.id);
-  // const thumbReq = await axios.get(movie.cover, {
-  //   responseType: "arraybuffer",
-  // });
-  // movie.base64thumb = Buffer.from(thumbReq.data, "binary").toString("base64");
+  // writeFile(movie.cover, movie.id);
+  const thumbReq = await axios.get(movie.cover, {
+    responseType: "arraybuffer",
+  });
+  movie.base64thumb = Buffer.from(thumbReq.data, "binary").toString("base64");
   return movie;
 }
 
