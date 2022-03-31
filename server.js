@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
@@ -36,6 +37,18 @@ app.get("/api/roll-movies", async (req, res) => {
   res.send(movies);
 });
 
+app.get("/api/get-movie-details", async (req, res) => {
+  const movies = [];
+  const allMovies = await axios.get(process.env.FIREBASE_URL);
+  const data = allMovies.data;
+  for (const key in data) {
+    const movie = await getSingleMovie(data[key].movieId);
+    movie.requester = data[key].requester;
+    movies.push(movie);
+  }
+  res.send(movies);
+});
+
 async function getSingleMovie(code) {
   let movie = {};
   const javbusResult = await queryJAVBus(code);
@@ -67,15 +80,6 @@ function randomizeAndFetch(codes) {
   }
   return "Bo code liao...";
 }
-
-function testAxios() {
-  axios.post(
-    "https://project-c-dd6df-default-rtdb.firebaseio.com/jav-movies.json",
-    { id: "test" }
-  );
-}
-
-testAxios();
 
 app.listen(process.env.PORT || 4000, () => console.log("Server is running"));
 initDiscordBot();
