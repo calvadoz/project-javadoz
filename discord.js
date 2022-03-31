@@ -50,6 +50,11 @@ const initDiscordBot = () => {
             );
             msg.channel.send("***Release Date: *** " + randomCodeFromPage.date);
             msg.channel.send(cover);
+            // send to firebase
+            axios.post(process.env.FIREBASE_URL, {
+              movieId: randomCodeFromPage.id,
+              requester: msg.author.username + "#" + msg.author.discriminator,
+            });
             return;
           } catch (e) {
             msg.channel.send("Something went wrong, please DM Calvadoz");

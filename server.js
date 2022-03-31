@@ -5,6 +5,7 @@ const cors = require("cors");
 const app = express();
 const initDiscordBot = require("./discord");
 const addNewCode = require("./outputCode");
+const axios = require("axios");
 
 const javbus = require("node-javbus")();
 
@@ -14,6 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
     origin: "*",
+    optionsSuccessStatus: 200,
   })
 );
 
@@ -24,19 +26,39 @@ app.get("/api/healthcheck", (req, res) => {
 
 app.get("/api/roll-movies", async (req, res) => {
   const movies = [];
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 10; i++) {
     const randomPage = Math.floor(Math.random() * 150);
     const randomPageResults = await javbus.page(randomPage);
     const randomizeMovieResult = randomizeAndFetch(randomPageResults);
-    console.log(randomizeMovieResult);
-    movies.push({
-      id: randomizeMovieResult.id,
-      title: randomizeMovieResult.name,
-      cover: "https://javbus.com" + randomizeMovieResult.img,
-    });
+    const movie = await getSingleMovie(randomizeMovieResult.id);
+    movies.push(movie);
   }
   res.send(movies);
 });
+
+async function getSingleMovie(code) {
+  let movie = {};
+  const javbusResult = await queryJAVBus(code);
+  movie.id = javbusResult.id;
+  movie.title = javbusResult.title;
+  movie.actresses = javbusResult.stars.map((star) => star.name).join(", ");
+  movie.cover = javbusResult.cover;
+  movie.genre = javbusResult.genre;
+  movie.label = javbusResult.label;
+  const thumbReq = await axios.get(movie.cover, {
+    responseType: "arraybuffer",
+  });
+  movie.base64thumb = Buffer.from(thumbReq.data, "binary").toString("base64");
+  return movie;
+}
+
+function queryJAVBus(code) {
+  try {
+    return javbus.show(code).catch((e) => console.log(e));
+  } catch (e) {
+    throw new error("Got error la", e);
+  }
+}
 
 function randomizeAndFetch(codes) {
   if (codes) {
@@ -45,6 +67,15 @@ function randomizeAndFetch(codes) {
   }
   return "Bo code liao...";
 }
+
+function testAxios() {
+  axios.post(
+    "https://project-c-dd6df-default-rtdb.firebaseio.com/jav-movies.json",
+    { id: "test" }
+  );
+}
+
+testAxios();
 
 app.listen(process.env.PORT || 4000, () => console.log("Server is running"));
 initDiscordBot();
