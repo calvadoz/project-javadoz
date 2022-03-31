@@ -82,6 +82,7 @@ function randomizeAndFetch(codes) {
 
 async function writeFile(coverUrl, movieId) {
   const fileName = `${__dirname}\\assets\\${movieId.toLowerCase()}.jpg`;
+  console.log("File Name: ", fileName);
   try {
     if (fs.existsSync(fileName)) {
       return;
@@ -101,7 +102,6 @@ async function writeFile(coverUrl, movieId) {
   }
 }
 
-console.log("DIRNAME: ", __dirname);
 
 app.listen(process.env.PORT || 4000, () => console.log("Server is running"));
 initDiscordBot();
