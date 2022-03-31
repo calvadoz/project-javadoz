@@ -44,6 +44,7 @@ app.get("/api/get-movie-details", async (req, res) => {
   for (const key in data) {
     const movie = await getSingleMovie(data[key].movieId);
     movie.requester = data[key].requester;
+    movie.timestamp = data[key].timestamp;
     movies.push(movie);
   }
   res.send(movies);
