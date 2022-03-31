@@ -31,7 +31,7 @@ const initDiscordBot = () => {
           "https://project-javadoz.herokuapp.com/api/healthcheck"
         );
       } catch (e) {
-        msg.channel.send("Bot is deadge, please DM Calvadoz");
+        msg.channel.send("Bot is deadge, please DM Calvadoz...");
       }
     }
     if (msg.content.toLowerCase() === "!cotd") {
