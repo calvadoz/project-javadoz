@@ -54,6 +54,7 @@ const initDiscordBot = () => {
             axios.post(process.env.FIREBASE_URL, {
               movieId: randomCodeFromPage.id,
               requester: msg.author.username + "#" + msg.author.discriminator,
+              timestamp: new Date()
             });
             return;
           } catch (e) {
