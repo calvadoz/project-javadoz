@@ -43,8 +43,8 @@ app.get("/api/get-movie-details", async (req, res) => {
     movie.timestamp = data[key].timestamp;
     console.log("Pushing movie ", movie.id);
     movies.push(movie);
-    res.send(movies);
   }
+  res.send(movies);
   // res.set("Access-Control-Allow-Origin", "https://javbus.com");
 });
 
