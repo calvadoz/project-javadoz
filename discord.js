@@ -39,7 +39,7 @@ const initDiscordBot = () => {
         const pageResults = await fetchFromJavBus();
         const randomCodeFromPage = randomizeAndFetch(pageResults);
         if (randomCodeFromPage) {
-          addNewCode(randomCodeFromPage.id);
+          // addNewCode(randomCodeFromPage.id);
           try {
             const movieDetails = await queryJAVBus(randomCodeFromPage.id);
             const cover = movieDetails.cover;
@@ -50,19 +50,38 @@ const initDiscordBot = () => {
             );
             msg.channel.send("***Release Date: *** " + randomCodeFromPage.date);
             msg.channel.send(cover);
-            // send to firebase
-            axios.post(process.env.FIREBASE_URL, {
-              movieId: randomCodeFromPage.id,
-              requester: msg.author.username + "#" + msg.author.discriminator,
-              timestamp: new Date()
+
+            const thumbReq = await axios.get(cover, {
+              responseType: "arraybuffer",
             });
-            return;
+            const base64thumb = Buffer.from(thumbReq.data, "binary").toString(
+              "base64"
+            );
+            // send to firebase
+            try {
+              console.log("Pushing movies..." + randomCodeFromPage.id);
+              await axios.post(
+                process.env.FIREBASE_URL + "jav-movies-history.json",
+                {
+                  movieId: randomCodeFromPage.id,
+                  requester:
+                    msg.author.username + "#" + msg.author.discriminator,
+                  base64thumb,
+                  timestamp: new Date(),
+                }
+              );
+            } catch (e) {
+              console.log(e);
+            }
           } catch (e) {
-            msg.channel.send("Something went wrong, please DM Calvadoz");
+            msg.channel.send(
+              "Something went wrong, please DM Calvadoz",
+              e.message
+            );
           }
         }
       } catch (e) {
-        msg.channel.send("Something went wrong, please DM Calvadoz");
+        msg.channel.send("Something went wrong, please DM Calvadoz", e.message);
       }
     }
   });
@@ -95,7 +114,7 @@ function randomizeAndFetch(codes) {
 }
 
 function randomizeAndFetchRandomPage() {
-  return Math.floor(Math.random() * totalPages);
+  return Math.floor((Math.random() + 1) * totalPages);
 }
 
 module.exports = initDiscordBot;

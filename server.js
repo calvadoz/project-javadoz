@@ -35,17 +35,18 @@ app.get("/api/roll-movies", async (req, res) => {
 
 app.get("/api/get-movie-details", async (req, res) => {
   const movies = [];
-  const allMovies = await axios.get(process.env.FIREBASE_URL);
+  const allMovies = await axios.get(
+    process.env.FIREBASE_URL + "jav-movies-history.json"
+  );
   const data = allMovies.data;
   for (const key in data) {
     const movie = await getSingleMovie(data[key].movieId);
     movie.requester = data[key].requester;
     movie.timestamp = data[key].timestamp;
-    console.log("Pushing movie ", movie.id);
+    movie.base64thumb = data[key].base64thumb;
     movies.push(movie);
   }
   res.send(movies);
-  // res.set("Access-Control-Allow-Origin", "https://javbus.com");
 });
 
 async function getSingleMovie(code) {
@@ -58,10 +59,11 @@ async function getSingleMovie(code) {
   movie.genre = javbusResult.genre;
   movie.label = javbusResult.label;
   // writeFile(movie.cover, movie.id);
-  const thumbReq = await axios.get(movie.cover, {
-    responseType: "arraybuffer",
-  });
-  movie.base64thumb = Buffer.from(thumbReq.data, "binary").toString("base64");
+  // write png binary on the fly
+  // const thumbReq = await axios.get(movie.cover, {
+  //   responseType: "arraybuffer",
+  // });
+  // movie.base64thumb = Buffer.from(thumbReq.data, "binary").toString("base64");
   return movie;
 }
 
@@ -81,6 +83,30 @@ function randomizeAndFetch(codes) {
   return "Bo code liao...";
 }
 
+// copy data with thumbnail
+async function updateData() {
+  const allMovies = await axios.get(
+    process.env.FIREBASE_URL + "jav-movies.json"
+  );
+  const data = allMovies.data;
+  for (const key in data) {
+    const movie = await getSingleMovie(data[key].movieId);
+    const thumbReq = await axios.get(movie.cover, {
+      responseType: "arraybuffer",
+    });
+    const base64thumb = Buffer.from(thumbReq.data, "binary").toString("base64");
+    movie.base64thumb = base64thumb;
+    await axios.post(process.env.FIREBASE_URL + "jav-movies-history.json", {
+      movieId: data[key].movieId,
+      requester: data[key].requester,
+      base64thumb: base64thumb,
+      timestamp: data[key].timestamp,
+    });
+    console.log("Pushed movie ", data[key].movieId);
+  }
+}
+
+// write cover to file
 async function writeFile(coverUrl, movieId) {
   const fileName = `${__dirname}\\assets\\${movieId.toLowerCase()}.jpg`;
   console.log("File Name: ", fileName);
@@ -102,7 +128,6 @@ async function writeFile(coverUrl, movieId) {
     console.error(err);
   }
 }
-
 
 app.listen(process.env.PORT || 4000, () => console.log("Server is running"));
 initDiscordBot();
