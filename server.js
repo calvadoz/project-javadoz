@@ -57,13 +57,18 @@ app.get("/api/get-movie-details", async (req, res) => {
 
 async function getSingleMovie(code) {
   let movie = {};
-  const javbusResult = await queryJAVBus(code);
-  movie.id = javbusResult.id;
-  movie.title = javbusResult.title;
-  movie.actresses = javbusResult.stars.map((star) => star.name).join(", ");
-  movie.cover = javbusResult.cover;
-  movie.genre = javbusResult.genre;
-  movie.label = javbusResult.label;
+  try {
+    const javbusResult = await queryJAVBus(code);
+    movie.id = javbusResult.id;
+    movie.title = javbusResult.title;
+    movie.actresses = javbusResult.stars.map((star) => star.name).join(", ");
+    movie.cover = javbusResult.cover;
+    movie.genre = javbusResult.genre;
+    movie.label = javbusResult.label;
+  } catch (err) {
+    throw new Error("Fetching from javbus failed ", err);
+  }
+
   // writeFile(movie.cover, movie.id);
   // write png binary on the fly
   // const thumbReq = await axios.get(movie.cover, {
