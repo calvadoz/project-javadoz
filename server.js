@@ -36,17 +36,22 @@ app.get("/api/roll-movies", async (req, res) => {
 app.get("/api/get-movie-details", async (req, res) => {
   console.log("Request Received from: ", req.socket.remoteAddress);
   const movies = [];
-  const allMovies = await axios.get(
-    process.env.FIREBASE_URL + "jav-movies-history.json"
-  );
-  const data = allMovies.data;
-  for (const key in data) {
-    const movie = await getSingleMovie(data[key].movieId);
-    movie.requester = data[key].requester;
-    movie.timestamp = data[key].timestamp;
-    movie.base64thumb = data[key].base64thumb;
-    movies.push(movie);
+  try {
+    const allMovies = await axios.get(
+      process.env.FIREBASE_URL + "jav-movies-history.json"
+    );
+    const data = allMovies.data;
+    for (const key in data) {
+      const movie = await getSingleMovie(data[key].movieId);
+      movie.requester = data[key].requester;
+      movie.timestamp = data[key].timestamp;
+      movie.base64thumb = data[key].base64thumb;
+      movies.push(movie);
+    }
+  } catch (err) {
+    console.log("Request failed... ", err);
   }
+
   res.send(movies);
 });
 
