@@ -89,6 +89,7 @@ const initDiscordBot = () => {
 
 function fetchFromJavBus() {
   let randomPage = randomizeAndFetchRandomPage();
+  randomPage = randomPage === 0 ? 1 : randomPage;
   console.log("Page no: ", randomPage);
   try {
     return javbus.page(randomPage);
@@ -114,7 +115,7 @@ function randomizeAndFetch(codes) {
 }
 
 function randomizeAndFetchRandomPage() {
-  return Math.floor((Math.random() + 1) * totalPages);
+  return Math.floor(Math.random() * totalPages);
 }
 
 module.exports = initDiscordBot;
