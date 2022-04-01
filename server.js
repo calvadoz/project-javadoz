@@ -34,6 +34,7 @@ app.get("/api/roll-movies", async (req, res) => {
 });
 
 app.get("/api/get-movie-details", async (req, res) => {
+  console.log("Request Received from: ", req.socket.remoteAddress);
   const movies = [];
   const allMovies = await axios.get(
     process.env.FIREBASE_URL + "jav-movies-history.json"
