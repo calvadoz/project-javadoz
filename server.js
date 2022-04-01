@@ -40,8 +40,10 @@ app.get("/api/get-movie-details", async (req, res) => {
     const allMovies = await axios.get(
       process.env.FIREBASE_URL + "jav-movies-history.json"
     );
+    console.log("====================== DONE Get movies from Firebase");
     const data = allMovies.data;
     for (const key in data) {
+      console.log("Getting movie details for movie ", data[key].movieId);
       const movie = await getSingleMovie(data[key].movieId);
       movie.requester = data[key].requester;
       movie.timestamp = data[key].timestamp;
