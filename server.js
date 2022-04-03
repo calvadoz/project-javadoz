@@ -57,6 +57,14 @@ app.get("/api/get-movie-details", async (req, res) => {
   res.send(movies);
 });
 
+app.get("/api/get-version", async (req, res) => {
+  res.send(
+    process.env.HEROKU_RELEASE_VERSION
+      ? process.env.HEROKU_RELEASE_VERSION
+      : "development"
+  );
+});
+
 async function getSingleMovie(code) {
   let movie = {};
   try {
