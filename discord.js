@@ -39,7 +39,6 @@ const initDiscordBot = () => {
         const pageResults = await fetchFromJavBus();
         const randomCodeFromPage = randomizeAndFetch(pageResults);
         if (randomCodeFromPage) {
-          // addNewCode(randomCodeFromPage.id);
           try {
             const movieDetails = await queryJAVBus(randomCodeFromPage.id);
             const cover = movieDetails.cover;
@@ -51,23 +50,22 @@ const initDiscordBot = () => {
             msg.channel.send("***Release Date: *** " + randomCodeFromPage.date);
             msg.channel.send(cover);
 
-            const thumbReq = await axios.get(cover, {
-              responseType: "arraybuffer",
-            });
-            const base64thumb = Buffer.from(thumbReq.data, "binary").toString(
-              "base64"
-            );
+            const r18movieReq = await scrapeR18(randomCodeFromPage.id);
+
             // send to firebase
             try {
               console.log("Pushing movies..." + randomCodeFromPage.id);
               await axios.post(
-                process.env.FIREBASE_URL + "jav-movies-history.json",
+                process.env.FIREBASE_URL + "jav-movies-r18.json",
                 {
                   movieId: randomCodeFromPage.id,
                   requester:
                     msg.author.username + "#" + msg.author.discriminator,
-                  base64thumb,
                   timestamp: new Date(),
+                  trailer:
+                    r18movieReq.trailer !== null ? r18movieReq.trailer : null,
+                  thumbnail:
+                    r18movieReq.poster !== null ? r18movieReq.poster : null,
                 }
               );
             } catch (e) {
@@ -116,6 +114,61 @@ function randomizeAndFetch(codes) {
 
 function randomizeAndFetchRandomPage() {
   return Math.floor(Math.random() * totalPages);
+}
+
+async function scrapeR18(code) {
+  const movie = {};
+  const movieId = code.toLowerCase();
+  const searchPage = "ul.cmn-list-product01 > li.item-list > a";
+  const videoPoster = "iframe";
+  const videoLink = "video > source";
+
+  let r18MovieLink;
+
+  browser = await puppeteer.launch({ args: ["--no-sandbox"] });
+  // begin scraping
+  // scrape - 1 (Search and get movie link)
+  let page = await browser.newPage();
+  await page.setDefaultNavigationTimeout(5000);
+  await page.goto(`https://www.r18.com/common/search/searchword=${movieId}/`);
+  try {
+    await page.waitForSelector(searchPage);
+
+    // use xpath / css selector
+    r18MovieLink = await page.$$eval(
+      searchPage,
+      (elems) => elems.map((el) => el.href)[0]
+    );
+
+    // scrape - 2 (Get Video Trailer Link)
+    page = await browser.newPage();
+    await page.setDefaultNavigationTimeout(5000);
+    await page.goto(r18MovieLink);
+    await page.waitForSelector(videoLink);
+    await page.waitForSelector(videoPoster);
+
+    const r18MoviePoster = await page.$$eval(
+      videoPoster,
+      (elems) => elems.map((el) => el.src)[0]
+    );
+
+    const r18TrailerLink = await page.$$eval(
+      videoLink,
+      (elems) => elems.map((el) => el.src)[0]
+    );
+
+    movie.trailer = r18TrailerLink.replace("_sm_", "_dmb_");
+    movie.poster = r18MoviePoster.split("&")[1].replace("poster=", "");
+  } catch (e) {
+    console.log(code + "==============" + e);
+    movie.trailer = null;
+    movie.poster = null;
+    console.log(movie);
+    return movie;
+  }
+  browser.close();
+  console.log("test", movie);
+  return movie;
 }
 
 module.exports = initDiscordBot;
