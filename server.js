@@ -10,7 +10,6 @@ const initDiscordBot = require("./discord");
 const addNewCode = require("./outputCode");
 const axios = require("axios");
 const javbus = require("node-javbus")();
-const data = require("./data.json");
 
 app.use(cors());
 app.use(express.json());
@@ -217,22 +216,22 @@ function randomizeAndFetch(codes) {
 
 // migrate data from one documen to another
 async function updateData() {
-  const movies = [];
+  // const movies = [];
 
-  for (let i = 0; i < data.length; i++) {
-    const r18movieReq = await scrapeR18(data[i].id);
-    await axios.post(
-      "https://project-c-dd6df-default-rtdb.firebaseio.com/jav-movies-r18.json",
-      {
-        movieId: data[i].id,
-        requester: data[i].requester,
-        timestamp: data[i].timestamp,
-        trailer: r18movieReq.trailer,
-        thumbnail: r18movieReq.poster,
-      }
-    );
-  }
-  console.log(movies);
+  // for (let i = 0; i < data.length; i++) {
+  //   const r18movieReq = await scrapeR18(data[i].id);
+  //   await axios.post(
+  //     "https://project-c-dd6df-default-rtdb.firebaseio.com/jav-movies-r18.json",
+  //     {
+  //       movieId: data[i].id,
+  //       requester: data[i].requester,
+  //       timestamp: data[i].timestamp,
+  //       trailer: r18movieReq.trailer,
+  //       thumbnail: r18movieReq.poster,
+  //     }
+  //   );
+  // }
+  // console.log(movies);
 }
 
 // write cover to file
