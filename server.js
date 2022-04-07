@@ -38,7 +38,7 @@ app.get("/api/get-movie-details", async (req, res) => {
   const movies = [];
   try {
     const allMovies = await axios.get(
-      process.env.FIREBASE_URL + "jav-movies-history.json"
+      process.env.FIREBASE_URL + "jav-movies.json"
     );
     console.log("====================== DONE Get movies from Firebase");
     const data = allMovies.data;
@@ -47,7 +47,7 @@ app.get("/api/get-movie-details", async (req, res) => {
       const movie = await getSingleMovie(data[key].movieId);
       movie.requester = data[key].requester;
       movie.timestamp = data[key].timestamp;
-      movie.base64thumb = data[key].base64thumb;
+      // movie.base64thumb = data[key].base64thumb;
       movies.push(movie);
     }
   } catch (err) {
@@ -104,23 +104,20 @@ function randomizeAndFetch(codes) {
   return "Bo code liao...";
 }
 
-// copy data with thumbnail
+// migrate data from one documen to another
 async function updateData() {
-  const allMovies = await axios.get(
-    process.env.FIREBASE_URL + "jav-movies.json"
-  );
+  const allMovies = await axios.get("");
   const data = allMovies.data;
   for (const key in data) {
-    const movie = await getSingleMovie(data[key].movieId);
-    const thumbReq = await axios.get(movie.cover, {
-      responseType: "arraybuffer",
-    });
-    const base64thumb = Buffer.from(thumbReq.data, "binary").toString("base64");
-    movie.base64thumb = base64thumb;
-    await axios.post(process.env.FIREBASE_URL + "jav-movies-history.json", {
+    // const movie = await getSingleMovie(data[key].movieId);
+    // const thumbReq = await axios.get(movie.cover, {
+    //   responseType: "arraybuffer",
+    // });
+    // const base64thumb = Buffer.from(thumbReq.data, "binary").toString("base64");
+    // movie.base64thumb = base64thumb;
+    await axios.post("", {
       movieId: data[key].movieId,
       requester: data[key].requester,
-      base64thumb: base64thumb,
       timestamp: data[key].timestamp,
     });
     console.log("Pushed movie ", data[key].movieId);
@@ -151,4 +148,5 @@ async function writeFile(coverUrl, movieId) {
 }
 
 app.listen(process.env.PORT || 4000, () => console.log("Server is running"));
+// updateData();
 initDiscordBot();
