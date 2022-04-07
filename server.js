@@ -3,12 +3,12 @@ const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
 const fs = require("fs");
+const puppeteer = require("puppeteer");
 
 const app = express();
 const initDiscordBot = require("./discord");
 const addNewCode = require("./outputCode");
 const axios = require("axios");
-
 const javbus = require("node-javbus")();
 
 app.use(cors());
@@ -55,6 +55,72 @@ app.get("/api/get-movie-details", async (req, res) => {
   }
 
   res.send(movies);
+});
+
+app.get("/api/view-movie-details", async (req, res) => {
+  const movie = {};
+  const movieId = req.query.movieId.toLowerCase();
+  const searchPage = "ul.cmn-list-product01 > li.item-list > a";
+  const videoPoster = "iframe";
+  const videoLink = "video > source";
+
+  const regex = "&poster=(.*)";
+
+  // let browser = await puppeteer.launch({
+  //   headless: false,
+  //   args: [
+  //     "--disable-web-security",
+  //     "--disable-features=IsolateOrigins,site-per-process",
+  //   ],
+  // });
+
+  browser = await puppeteer.launch();
+  // begin scraping
+  // scrape - 1 (Search and get movie link)
+  let page = await browser.newPage();
+
+  await page.goto(`https://www.r18.com/common/search/searchword=${movieId}/`);
+  await page.waitForSelector(searchPage);
+  // use xpath / css selector
+  const r18MovieLink = await page.$$eval(
+    searchPage,
+    (elems) => elems.map((el) => el.href)[0]
+  );
+
+  // if no movie found, close connection
+  if (!r18MovieLink) {
+    res.send(movie);
+    browser.close();
+  }
+
+  // scrape - 2 (Get Video Trailer Link)
+  page = await browser.newPage();
+  await page.goto(r18MovieLink);
+  await page.waitForSelector(videoLink);
+  await page.waitForSelector(videoPoster);
+
+  const r18MoviePoster = await page.$$eval(
+    videoPoster,
+    (elems) => elems.map((el) => el.src)[0]
+  );
+
+  const r18TrailerLink = await page.$$eval(
+    videoLink,
+    (elems) => elems.map((el) => el.src)[0]
+  );
+
+  // console.log("Movie Id: ", r18MovieLink);
+  // console.log("Video Link: ", r18TrailerLink);
+  // console.log(
+  //   "Video Poster: ",
+  //   r18MoviePoster.split("&")[1].replace("poster=", "")
+  // );
+
+  movie.trailer = r18TrailerLink;
+  movie.poster = r18MoviePoster.split("&")[1].replace("poster=", "");
+
+  res.send(movie);
+  browser.close();
 });
 
 app.get("/api/get-version", async (req, res) => {
@@ -149,4 +215,4 @@ async function writeFile(coverUrl, movieId) {
 
 app.listen(process.env.PORT || 4000, () => console.log("Server is running"));
 // updateData();
-initDiscordBot();
+// initDiscordBot();
