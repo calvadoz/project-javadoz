@@ -4,6 +4,7 @@ const fs = require("fs");
 const addNewCode = require("./outputCode");
 const axios = require("axios");
 const totalPages = 150;
+const puppeteer = require("puppeteer");
 
 const initDiscordBot = () => {
   //   const { Client, Intents } = require("discord.js");
@@ -50,10 +51,10 @@ const initDiscordBot = () => {
             msg.channel.send("***Release Date: *** " + randomCodeFromPage.date);
             msg.channel.send(cover);
 
-            const r18movieReq = await scrapeR18(randomCodeFromPage.id);
-
+            
             // send to firebase
             try {
+              const r18movieReq = await scrapeR18(randomCodeFromPage.id);
               console.log("Pushing movies..." + randomCodeFromPage.id);
               await axios.post(
                 process.env.FIREBASE_URL + "jav-movies-r18.json",
