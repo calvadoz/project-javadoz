@@ -74,7 +74,7 @@ app.get("/api/view-movie-details", async (req, res) => {
   //   ],
   // });
 
-  browser = await puppeteer.launch();
+  browser = await puppeteer.launch({args: ['--no-sandbox']});
   // begin scraping
   // scrape - 1 (Search and get movie link)
   let page = await browser.newPage();
