@@ -2,7 +2,6 @@
   "name": "project-javadoz",
   "version": "1.0.0",
   "description": "Javadoz bot discord",
-  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
