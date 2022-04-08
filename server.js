@@ -8,6 +8,7 @@ const puppeteer = require("puppeteer");
 const app = express();
 const initDiscordBot = require("./discord");
 const addNewCode = require("./outputCode");
+const scrape = require("./scraper");
 const axios = require("axios");
 const javbus = require("node-javbus")();
 
@@ -194,7 +195,7 @@ async function scrapeR18(code) {
     return movie;
   }
   browser.close();
-  console.log("test", movie);
+  console.log(console.log("Scraping R18 ========> ", movie));
   return movie;
 }
 
@@ -217,7 +218,6 @@ function randomizeAndFetch(codes) {
 // migrate data from one documen to another
 async function updateData() {
   // const movies = [];
-
   // for (let i = 0; i < data.length; i++) {
   //   const r18movieReq = await scrapeR18(data[i].id);
   //   await axios.post(
@@ -257,6 +257,11 @@ async function writeFile(coverUrl, movieId) {
   }
 }
 
+async function scrapeR18(code) {
+  await scrape(code);
+}
+
 app.listen(process.env.PORT || 4000, () => console.log("Server is running"));
 // updateData();
-initDiscordBot();
+// initDiscordBot();
+scrapeR18("ipx-722");
