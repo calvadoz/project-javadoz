@@ -47,11 +47,8 @@ const initDiscordBot = () => {
       } else {
         talkedRecently.add(msg.author.id);
         setTimeout(() => {
-          // msg.channel.send(
-          //   "OK, <@" + msg.author.id + "> you may now request again..."
-          // );
           msg.channel.send(
-            "OK, " + msg.author.id + " you may now request again..."
+            "OK, <@" + msg.author.id + "> you may now request again..."
           );
           // Removes the user from the set after a minute
           talkedRecently.delete(msg.author.id);
