@@ -13,10 +13,9 @@ async function scrapeR18(code) {
   // begin scraping
   // scrape - 1 (Search and get movie link)
   let page = await browser.newPage();
-  await page.setDefaultNavigationTimeout(5000);
   await page.goto(`https://www.r18.com/common/search/searchword=${movieId}/`);
   try {
-    await page.waitForSelector(searchPage);
+    await page.waitForSelector(searchPage, { timeout: 3000 });
 
     // use xpath / css selector
     r18MovieLink = await page.$$eval(
@@ -28,7 +27,7 @@ async function scrapeR18(code) {
     page = await browser.newPage();
     await page.setDefaultNavigationTimeout(5000);
     await page.goto(r18MovieLink);
-    await page.waitForSelector(videoLink);
+    await page.waitForSelector(videoLink, { timeout: 3000 });
     await page.waitForSelector(videoPoster);
 
     const r18MoviePoster = await page.$$eval(
