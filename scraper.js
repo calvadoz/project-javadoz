@@ -46,7 +46,7 @@ async function scrapeR18(code) {
     console.log(code + "==============" + e);
     movie.trailer = null;
     movie.poster = null;
-    return movie;
+    // throw new Error("Some error occured during scraping");
   }
   browser.close();
   console.log(console.log("Scraping R18 ========> ", movie));
