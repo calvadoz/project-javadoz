@@ -5,7 +5,7 @@ const addNewCode = require("./outputCode");
 const axios = require("axios");
 const totalPages = 150;
 const scrape = require("./scraper");
-
+const talkedRecently = new Set();
 const initDiscordBot = () => {
   //   const { Client, Intents } = require("discord.js");
   //   const bot = new Client({
@@ -36,6 +36,25 @@ const initDiscordBot = () => {
       }
     }
     if (msg.content.toLowerCase() === "!cotd") {
+      // spam prevention
+      if (talkedRecently.has(msg.author.id)) {
+        msg.channel.send(
+          "Calm down " +
+            msg.author.username +
+            ", please wait 5 seconds before your next !cotd"
+        );
+        return;
+      } else {
+        talkedRecently.add(msg.author.id);
+        setTimeout(() => {
+          msg.channel.send(
+            "OK, <@" + msg.author.id + "> you may now request again..."
+          );
+          // Removes the user from the set after a minute
+          talkedRecently.delete(msg.author.id);
+        }, 5000);
+      }
+
       try {
         const pageResults = await fetchFromJavBus();
         const randomCodeFromPage = randomizeAndFetch(pageResults);
@@ -51,7 +70,6 @@ const initDiscordBot = () => {
             msg.channel.send("***Release Date: *** " + randomCodeFromPage.date);
             msg.channel.send(cover);
 
-            
             // send to firebase
             try {
               const r18movieReq = await scrape(randomCodeFromPage.id);
