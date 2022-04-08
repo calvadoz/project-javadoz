@@ -2,8 +2,6 @@ require("dotenv").config();
 const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
-const fs = require("fs");
-const puppeteer = require("puppeteer");
 
 const app = express();
 const initDiscordBot = require("./discord");
@@ -12,11 +10,11 @@ const javbus = require("node-javbus")();
 
 app.use(cors());
 app.use(express.json());
+app.use(helmet());
 app.use("/static", express.static("assets", { maxAge: 3600000 }));
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/api/healthcheck", (req, res) => {
-  //   addNewCode("");
   res.status(200).send("Nothing here.. Just to check if the server is healthy");
 });
 

@@ -15,8 +15,6 @@ const initDiscordBot = () => {
   const bot = new Discord.Client();
 
   const TOKEN = process.env.TOKEN;
-  const javbusWeb = "https://javbus.com/en/";
-  const javbusWebRoot = "https://javbus.com";
 
   bot.login(TOKEN);
 
