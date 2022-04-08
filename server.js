@@ -59,7 +59,7 @@ async function getSingleMovie(code) {
   let movie = {};
   try {
     const javbusResult = await queryJAVBus(code);
-    movie.id = javbusResult.id;
+    movie.movieId = javbusResult.id;
     movie.title = javbusResult.title;
     movie.actresses = javbusResult.stars.map((star) => star.name).join(", ");
     movie.genre = javbusResult.genre;
