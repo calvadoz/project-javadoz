@@ -2,12 +2,18 @@ require("dotenv").config();
 const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
-
 const app = express();
+
 const initDiscordBot = require("./discord");
 const axios = require("axios");
 const javbus = require("node-javbus")();
 
+// const corsOptions = {
+//   origin: "http://localhost:3000",
+//   credentials: true,
+//   optionSuccessStatus: 200,
+// };
+// app.use(cors(corsOptions));
 app.use(cors());
 app.use(express.json());
 app.use(helmet());
