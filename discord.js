@@ -41,18 +41,21 @@ const initDiscordBot = () => {
         msg.channel.send(
           "Calm down " +
             msg.author.username +
-            ", please wait 5 seconds before your next !cotd"
+            ", please wait 15 seconds before your next !cotd"
         );
         return;
       } else {
         talkedRecently.add(msg.author.id);
         setTimeout(() => {
+          // msg.channel.send(
+          //   "OK, <@" + msg.author.id + "> you may now request again..."
+          // );
           msg.channel.send(
-            "OK, <@" + msg.author.id + "> you may now request again..."
+            "OK, " + msg.author.id + " you may now request again..."
           );
           // Removes the user from the set after a minute
           talkedRecently.delete(msg.author.id);
-        }, 5000);
+        }, 15000);
       }
 
       try {
