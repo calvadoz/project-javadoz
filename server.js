@@ -72,6 +72,14 @@ async function getSingleMovie(code) {
     movie.studio = javbusResult.studio;
     movie.releaseDate = javbusResult.release_date;
     movie.length = javbusResult.length;
+    axios
+      .get("https://www2.javhdporn.net/video/tysf-002/")
+      .then((response) => {
+        console.log(response.status);
+      })
+      .catch((error) => {
+        console.log(error); //Logs a string: Error: Request failed with status code 404
+      });
   } catch (err) {
     throw new Error("Fetching from javbus failed ", err.message);
   }

@@ -39,6 +39,7 @@ async function scrapeR18(code) {
       (elems) => elems.map((el) => el.src)[0]
     );
 
+    // get HD trailer if available
     movie.trailer = r18TrailerLink.replace("_sm_", "_dmb_");
     movie.poster = r18MoviePoster.split("&")[1].replace("poster=", "");
   } catch (e) {
