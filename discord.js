@@ -38,15 +38,12 @@ const initDiscordBot = () => {
       // spam prevention
       talkedRecently.add("false");
       if (talkedRecently.has("true")) {
-        msg.channel.send("Calm down, please wait 6.9 seconds before next request !");
+        msg.channel.send("Calm down, please wait 10 seconds before next request !");
       } else {
         talkedRecently.add("true");
         setTimeout(() => {
-          msg.channel.send(
-            "!cotd is available again..."
-          );
           talkedRecently.delete("true");
-        }, 6900);
+        }, 10000);
       }
       // if (talkedRecently.has(msg.author.id)) {
       // msg.channel.send(
