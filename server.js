@@ -7,7 +7,7 @@ const app = express();
 const initDiscordBot = require("./discord");
 const axios = require("axios");
 const javbus = require("node-javbus")();
-
+const videoUrl = "https://www2.javhdporn.net/video/";
 // const corsOptions = {
 //   origin: "http://localhost:3000",
 //   credentials: true,
@@ -72,22 +72,14 @@ async function getSingleMovie(code) {
     movie.studio = javbusResult.studio;
     movie.releaseDate = javbusResult.release_date;
     movie.length = javbusResult.length;
+    videoUrl += code.toLowerCase() + "/";
     axios
-      .get("https://www2.javhdporn.net/video/tysf-002/")
+      .get(videoUrl)
       .then((response) => {
-        console.log("Success:", response.status);
+        movie.videoUrl = videoUrl;
       })
       .catch((error) => {
-        console.log(error); //Logs a string: Error: Request failed with status code 404
-      });
-
-    axios
-      .get("https://www2.javhdporn.net/video/tysf-02/")
-      .then((response) => {
-        console.log("Error: ", response.status);
-      })
-      .catch((error) => {
-        console.log("Error: ", error); //Logs a string: Error: Request failed with status code 404
+        movie.videoUrl = null;
       });
   } catch (err) {
     throw new Error("Fetching from javbus failed ", err.message);
