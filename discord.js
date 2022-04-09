@@ -4,8 +4,8 @@ const { v4: uuidv4 } = require("uuid");
 const fs = require("fs");
 const addNewCode = require("./outputCode");
 const axios = require("axios");
+const { scrapeJavHD, scrapeR18 } = require("./scraper");
 const totalPages = 150;
-const scrape = require("./scraper");
 const talkedRecently = new Set();
 const initDiscordBot = () => {
   //   const { Client, Intents } = require("discord.js");
@@ -71,7 +71,7 @@ const initDiscordBot = () => {
 
             // send to firebase
             try {
-              const r18movieReq = await scrape(randomCodeFromPage.id);
+              const r18movieReq = await scrapeR18(randomCodeFromPage.id);
               console.log("Pushing movies..." + randomCodeFromPage.id);
               await axios.post(
                 process.env.FIREBASE_URL + "jav-movies-db.json",

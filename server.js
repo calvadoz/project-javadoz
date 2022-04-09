@@ -8,7 +8,6 @@ const app = express();
 const initDiscordBot = require("./discord");
 const axios = require("axios");
 const javbus = require("node-javbus")();
-const { testFunction1, testFunction2, testFunction3 } = require("./scraper");
 const { scrapeJavHD, scrapeR18 } = require("./scraper");
 
 var allowedOrigins = ["http://localhost:3000", "https://calvadoz.github.io"];
