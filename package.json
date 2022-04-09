@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Javadoz bot discord",
   "main": "index.js",
+  "typ": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "exp": "node --experimental-modules --",

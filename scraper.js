@@ -4,6 +4,7 @@ const r18VideoUrl = "https://www.r18.com/common/search/searchword=";
 const javHDVideoUrl = "https://www2.javhdporn.net/video/";
 
 async function scrapeR18(code) {
+  console.log("Scraping r18");
   const movie = {};
   const movieId = code.toLowerCase();
   const searchPage = "ul.cmn-list-product01 > li.item-list > a";
@@ -58,28 +59,21 @@ async function scrapeR18(code) {
 
 async function scrapeJavHD(code) {
   const movieId = code.toLowerCase();
-  const notFoundHeader = "section.error-404";
-  const videoPoster = "iframe";
-  const videoLink = "video > source";
-  let isNotFound;
-
+  const videoPlayer = "div.video-player-area";
+  const pageUrl = `${javHDVideoUrl}${movieId}/`;
+  console.log("Scraping ====> " + pageUrl);
   browser = await puppeteer.launch({ args: ["--no-sandbox"] });
   // begin scraping
   // scrape - 1 (Search and get movie link)
   let page = await browser.newPage();
-  await page.goto(`${javHDVideoUrl}${movieId}/`);
+  await page.goto(pageUrl);
   try {
-    await page.waitForSelector(notFoundHeader, { timeout: 5000 });
-    // use xpath / css selector
-    isNotFound = await page.$$eval(
-      searchPage,
-      (elems) => elems.map((el) => el.href)[0]
-    );
-    console.log("Is Not Found ", isNotFound);
+    await page.waitForSelector(videoPlayer, { timeout: 3000 });
+    return pageUrl;
   } catch (e) {
-    console.log("Error while scraping: ", e);
+    return null;
   }
 }
 
-module.exports = scrapeJavHD;
-module.exports = scrapeR18;
+module.exports.scrapeJavHD = scrapeJavHD;
+module.exports.scrapeR18 = scrapeR18;

@@ -8,7 +8,8 @@ const app = express();
 const initDiscordBot = require("./discord");
 const axios = require("axios");
 const javbus = require("node-javbus")();
-const scrapeJavHD = require("./scraper");
+const { testFunction1, testFunction2, testFunction3 } = require("./scraper");
+const { scrapeJavHD, scrapeR18 } = require("./scraper");
 
 // const corsOptions = {
 //   origin: "http://localhost:3000",
@@ -76,6 +77,8 @@ async function getSingleMovie(code) {
     movie.studio = javbusResult.studio;
     movie.releaseDate = javbusResult.release_date;
     movie.length = javbusResult.length;
+    const fullMovieUrl = await scrapeJavHD(code);
+    movie.fullMovieUrl = fullMovieUrl;
   } catch (err) {
     throw new Error("Fetching from javbus failed ", err.message);
   }
@@ -118,4 +121,4 @@ async function updateData() {
 
 app.listen(process.env.PORT || 4000, () => console.log("Server is running"));
 // updateData();
-initDiscordBot();
+// initDiscordBot();
