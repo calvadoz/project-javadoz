@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
+const { v4: uuidv4 } = require("uuid");
 const app = express();
 
 const initDiscordBot = require("./discord");
@@ -28,12 +29,14 @@ app.get("/api/get-movie-details", async (req, res) => {
   const movies = [];
   try {
     const allMovies = await axios.get(
-      process.env.FIREBASE_URL + "jav-movies-r18.json"
+      process.env.FIREBASE_URL + "jav-movies-database.json"
     );
     const data = allMovies.data;
     for (const key in data) {
       console.log("Getting movie details for movie ", data[key].movieId);
       const movie = await getSingleMovie(data[key].movieId);
+      movie.guid = data[key].guid;
+      movie.watchCount = data[key].watchCount;
       movie.requester = data[key].requester;
       movie.timestamp = data[key].timestamp;
       movie.thumbnail = data[key].thumbnail ? data[key].thumbnail : null;
@@ -92,24 +95,25 @@ function queryJAVBus(code) {
   }
 }
 
-// migrate data from one documen to another
-async function updateData() {
-  // const movies = [];
-  // for (let i = 0; i < data.length; i++) {
-  //   const r18movieReq = await scrapeR18(data[i].id);
-  //   await axios.post(
-  //     "https://project-c-dd6df-default-rtdb.firebaseio.com/jav-movies-r18.json",
-  //     {
-  //       movieId: data[i].id,
-  //       requester: data[i].requester,
-  //       timestamp: data[i].timestamp,
-  //       trailer: r18movieReq.trailer,
-  //       thumbnail: r18movieReq.poster,
-  //     }
-  //   );
-  // }
-  // console.log(movies);
-}
+// migrate data from one document to another
+// async function updateData() {
+//   const allMovies = await axios.get(
+//     process.env.FIREBASE_URL + "jav-movies-r18.json"
+//   );
+//   const data = allMovies.data;
+//   for (const key in data) {
+//     await axios.post("", {
+//       guid: uuidv4(),
+//       movieId: data[key].movieId,
+//       requester: data[key].requester,
+//       timestamp: data[key].timestamp,
+//       trailer: data[key].trailer,
+//       thumbnail: data[key].thumbnail,
+//       watchCount: 0,
+//     });
+//     console.log("Pushed movies: ", data[key].movieId);
+//   }
+// }
 
 app.listen(process.env.PORT || 4000, () => console.log("Server is running"));
 // updateData();

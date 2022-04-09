@@ -73,7 +73,7 @@ const initDiscordBot = () => {
               const r18movieReq = await scrape(randomCodeFromPage.id);
               console.log("Pushing movies..." + randomCodeFromPage.id);
               await axios.post(
-                process.env.FIREBASE_URL + "jav-movies-r18.json",
+                process.env.FIREBASE_URL + "jav-movies-database.json",
                 {
                   movieId: randomCodeFromPage.id,
                   requester:

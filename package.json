@@ -28,6 +28,7 @@
     "firebase": "^9.6.10",
     "helmet": "^5.0.2",
     "node-javbus": "^0.0.9",
-    "puppeteer": "^13.5.2"
+    "puppeteer": "^13.5.2",
+    "uuid": "^8.3.2"
   }
 }
