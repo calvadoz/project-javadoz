@@ -70,6 +70,7 @@ async function getSingleMovie(code) {
     movie.actresses = javbusResult.stars.map((star) => star.name).join(", ");
     movie.genre = javbusResult.genre;
     movie.label = javbusResult.label;
+    movie.releaseDate = javbusResult.date;
   } catch (err) {
     throw new Error("Fetching from javbus failed ", err);
   }
