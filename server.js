@@ -11,30 +11,23 @@ const javbus = require("node-javbus")();
 const { testFunction1, testFunction2, testFunction3 } = require("./scraper");
 const { scrapeJavHD, scrapeR18 } = require("./scraper");
 
-const corsOptions = {
-  origin: [
-    "calvadoz.github.io",
-    "https://calvadoz.github.io",
-    "localhost:3000",
-    "http://localhost:3000",
-  ],
-  default: "calvadoz.github.io",
-  credentials: true,
-  optionSuccessStatus: 200,
-};
-app.all("*", function (req, res, next) {
-  var origin =
-    cors.origin.indexOf(req.header("origin").toLowerCase()) > -1
-      ? req.headers.origin
-      : cors.default;
-  res.header("Access-Control-Allow-Origin", origin);
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
-});
-app.use(cors(corsOptions));
+var allowedOrigins = ["http://localhost:3000", "https://calvadoz.github.io"];
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // allow requests with no origin
+      // (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) === -1) {
+        var msg =
+          "The CORS policy for this site does not " +
+          "allow access from the specified Origin.";
+        return callback(new Error(msg), false);
+      }
+      return callback(null, true);
+    },
+  })
+);
 // app.use(cors());
 app.use(express.json());
 app.use(helmet());
