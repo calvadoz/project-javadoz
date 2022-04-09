@@ -69,12 +69,12 @@ async function getSingleMovie(code) {
     movie.title = javbusResult.title;
     movie.actresses = javbusResult.stars.map((star) => star.name).join(", ");
     movie.genre = javbusResult.genre;
-    movie.label = javbusResult.label;
-    movie.releaseDate = javbusResult.date;
+    movie.studio = javbusResult.studio;
+    movie.releaseDate = javbusResult.release_date;
+    movie.length = javbusResult.length;
   } catch (err) {
-    throw new Error("Fetching from javbus failed ", err);
+    throw new Error("Fetching from javbus failed ", err.message);
   }
-
   // writeFile(movie.cover, movie.id);
   // write png binary on the fly
   // const thumbReq = await axios.get(movie.cover, {
@@ -113,4 +113,4 @@ async function updateData() {
 
 app.listen(process.env.PORT || 4000, () => console.log("Server is running"));
 // updateData();
-initDiscordBot();
+// initDiscordBot();
