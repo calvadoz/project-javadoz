@@ -36,23 +36,35 @@ const initDiscordBot = () => {
     }
     if (msg.content.toLowerCase() === "!cotd") {
       // spam prevention
-      if (talkedRecently.has(msg.author.id)) {
-        msg.channel.send(
-          "Calm down " +
-            msg.author.username +
-            ", please wait 15 seconds before your next !cotd"
-        );
-        return;
+      talkedRecently.add("false");
+      if (talkedRecently.has("true")) {
+        msg.channel.send("Calm down, movie is publishing to dashboard... ");
       } else {
-        talkedRecently.add(msg.author.id);
+        talkedRecently.add("true");
         setTimeout(() => {
           msg.channel.send(
-            "OK, <@" + msg.author.id + "> you may now request again..."
+            "Movie is published successfully, please continue to !cotd"
           );
-          // Removes the user from the set after a minute
-          talkedRecently.delete(msg.author.id);
-        }, 15000);
+          talkedRecently.delete("true");
+        }, 5000);
       }
+      // if (talkedRecently.has(msg.author.id)) {
+      // msg.channel.send(
+      //   "Calm down " +
+      //     msg.author.username +
+      //     ", please wait 15 seconds before your next !cotd"
+      // );
+      //   return;
+      // } else {
+      //   talkedRecently.add(msg.author.id);
+      // setTimeout(() => {
+      //   msg.channel.send(
+      //     "OK, <@" + msg.author.id + "> you may now request again..."
+      //   );
+      //   // Removes the user from the set after a minute
+      //   talkedRecently.delete(msg.author.id);
+      // }, 15000);
+      // }
 
       try {
         const pageResults = await fetchFromJavBus();
