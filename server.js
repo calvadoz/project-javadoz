@@ -88,8 +88,8 @@ async function getSingleMovie(code) {
     movie.studio = javbusResult.studio;
     movie.releaseDate = javbusResult.release_date;
     movie.length = javbusResult.length;
-    const fullMovieUrl = await scrapeJavHD(code);
-    movie.fullMovieUrl = fullMovieUrl;
+    // const fullMovieUrl = await scrapeJavHD(code);
+    // movie.fullMovieUrl = fullMovieUrl;
   } catch (err) {
     throw new Error("Fetching from javbus failed ", err.message);
   }
