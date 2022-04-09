@@ -8,6 +8,7 @@ const app = express();
 const initDiscordBot = require("./discord");
 const axios = require("axios");
 const javbus = require("node-javbus")();
+const scrapeJavHD = require("./scraper");
 
 // const corsOptions = {
 //   origin: "http://localhost:3000",
@@ -29,7 +30,7 @@ app.get("/api/get-movie-details", async (req, res) => {
   const movies = [];
   try {
     const allMovies = await axios.get(
-      process.env.FIREBASE_URL + "jav-movies-database.json"
+      process.env.FIREBASE_URL + "jav-movies-db.json"
     );
     const data = allMovies.data;
     for (const key in data) {
@@ -96,24 +97,24 @@ function queryJAVBus(code) {
 }
 
 // migrate data from one document to another
-// async function updateData() {
-//   const allMovies = await axios.get(
-//     process.env.FIREBASE_URL + "jav-movies-r18.json"
-//   );
-//   const data = allMovies.data;
-//   for (const key in data) {
-//     await axios.post("", {
-//       guid: uuidv4(),
-//       movieId: data[key].movieId,
-//       requester: data[key].requester,
-//       timestamp: data[key].timestamp,
-//       trailer: data[key].trailer,
-//       thumbnail: data[key].thumbnail,
-//       watchCount: 0,
-//     });
-//     console.log("Pushed movies: ", data[key].movieId);
-//   }
-// }
+async function updateData() {
+  const allMovies = await axios.get(
+    process.env.FIREBASE_URL + "jav-movies-database.json"
+  );
+  const data = allMovies.data;
+  for (const key in data) {
+    await axios.post(process.env.FIREBASE_URL + "jav-movies-db.json", {
+      guid: uuidv4(),
+      movieId: data[key].movieId,
+      requester: data[key].requester,
+      timestamp: data[key].timestamp,
+      trailer: data[key].trailer,
+      thumbnail: data[key].thumbnail,
+      watchCount: 0,
+    });
+    console.log("Pushed movies: ", data[key].movieId);
+  }
+}
 
 app.listen(process.env.PORT || 4000, () => console.log("Server is running"));
 // updateData();

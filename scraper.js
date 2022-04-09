@@ -58,9 +58,10 @@ async function scrapeR18(code) {
 
 async function scrapeJavHD(code) {
   const movieId = code.toLowerCase();
-  const searchPage = "ul.cmn-list-product01 > li.item-list > a";
+  const notFoundHeader = "section.error-404";
   const videoPoster = "iframe";
   const videoLink = "video > source";
+  let isNotFound;
 
   browser = await puppeteer.launch({ args: ["--no-sandbox"] });
   // begin scraping
@@ -68,10 +69,17 @@ async function scrapeJavHD(code) {
   let page = await browser.newPage();
   await page.goto(`${javHDVideoUrl}${movieId}/`);
   try {
-    await page.waitForSelector(searchPage, { timeout: 7000 });
+    await page.waitForSelector(notFoundHeader, { timeout: 5000 });
+    // use xpath / css selector
+    isNotFound = await page.$$eval(
+      searchPage,
+      (elems) => elems.map((el) => el.href)[0]
+    );
+    console.log("Is Not Found ", isNotFound);
   } catch (e) {
     console.log("Error while scraping: ", e);
   }
 }
 
+module.exports = scrapeJavHD;
 module.exports = scrapeR18;

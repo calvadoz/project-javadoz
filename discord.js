@@ -1,5 +1,6 @@
 require("dotenv").config();
 const javbus = require("node-javbus")();
+const { v4: uuidv4 } = require("uuid");
 const fs = require("fs");
 const addNewCode = require("./outputCode");
 const axios = require("axios");
@@ -73,8 +74,9 @@ const initDiscordBot = () => {
               const r18movieReq = await scrape(randomCodeFromPage.id);
               console.log("Pushing movies..." + randomCodeFromPage.id);
               await axios.post(
-                process.env.FIREBASE_URL + "jav-movies-database.json",
+                process.env.FIREBASE_URL + "jav-movies-db.json",
                 {
+                  guid: uuidv4(),
                   movieId: randomCodeFromPage.id,
                   requester:
                     msg.author.username + "#" + msg.author.discriminator,
@@ -83,6 +85,7 @@ const initDiscordBot = () => {
                     r18movieReq.trailer !== null ? r18movieReq.trailer : null,
                   thumbnail:
                     r18movieReq.poster !== null ? r18movieReq.poster : null,
+                  watchCount: 0,
                 }
               );
             } catch (e) {
