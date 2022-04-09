@@ -56,22 +56,12 @@ app.get("/api/get-version", async (req, res) => {
 });
 
 app.get("/api/get-movie-metadata", async (req, res) => {
-  const isLocal =
-    req.headers.host === "localhost" || req.headers.host === "127.0.0.1";
   const movieId = req.query.movieId;
   const movieDetails = await getSingleMovie(movieId, isLocal);
   res.send(movieDetails);
 });
 
-function cliAddress(req) {
-  return (
-    req.connection.remoteAddress ||
-    req.socket.remoteAddress ||
-    req.headers["x-forwarded-for"]
-  );
-}
-
-async function getSingleMovie(code, isLocal) {
+async function getSingleMovie(code) {
   let movie = {};
   try {
     const javbusResult = await queryJAVBus(code);
@@ -82,17 +72,6 @@ async function getSingleMovie(code, isLocal) {
     movie.studio = javbusResult.studio;
     movie.releaseDate = javbusResult.release_date;
     movie.length = javbusResult.length;
-    videoUrl += code.toLowerCase() + "/";
-    if (!isLocal) {
-      axios
-        .get(videoUrl)
-        .then((response) => {
-          movie.videoUrl = videoUrl;
-        })
-        .catch((error) => {
-          movie.videoUrl = null;
-        });
-    }
   } catch (err) {
     throw new Error("Fetching from javbus failed ", err.message);
   }
