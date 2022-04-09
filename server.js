@@ -75,10 +75,19 @@ async function getSingleMovie(code) {
     axios
       .get("https://www2.javhdporn.net/video/tysf-002/")
       .then((response) => {
-        console.log(response.status);
+        console.log("Success:", response.status);
       })
       .catch((error) => {
         console.log(error); //Logs a string: Error: Request failed with status code 404
+      });
+
+    axios
+      .get("https://www2.javhdporn.net/video/tysf-02/")
+      .then((response) => {
+        console.log("Error: ", response.status);
+      })
+      .catch((error) => {
+        console.log("Error: ", error); //Logs a string: Error: Request failed with status code 404
       });
   } catch (err) {
     throw new Error("Fetching from javbus failed ", err.message);
