@@ -38,7 +38,7 @@ const initDiscordBot = () => {
       // spam prevention
       talkedRecently.add("false");
       if (talkedRecently.has("true")) {
-        msg.channel.send("Calm down, movie is publishing to dashboard... ");
+        msg.channel.send("Calm down, please wait 5 seconds before next request !");
       } else {
         talkedRecently.add("true");
         setTimeout(() => {
