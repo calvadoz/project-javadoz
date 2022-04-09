@@ -11,13 +11,31 @@ const javbus = require("node-javbus")();
 const { testFunction1, testFunction2, testFunction3 } = require("./scraper");
 const { scrapeJavHD, scrapeR18 } = require("./scraper");
 
-// const corsOptions = {
-//   origin: "http://localhost:3000",
-//   credentials: true,
-//   optionSuccessStatus: 200,
-// };
-// app.use(cors(corsOptions));
-app.use(cors());
+const corsOptions = {
+  origin: [
+    "calvadoz.github.io",
+    "https://calvadoz.github.io",
+    "localhost:3000",
+    "http://localhost:3000",
+  ],
+  default: "calvadoz.github.io",
+  credentials: true,
+  optionSuccessStatus: 200,
+};
+app.all("*", function (req, res, next) {
+  var origin =
+    cors.origin.indexOf(req.header("origin").toLowerCase()) > -1
+      ? req.headers.origin
+      : cors.default;
+  res.header("Access-Control-Allow-Origin", origin);
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
+app.use(cors(corsOptions));
+// app.use(cors());
 app.use(express.json());
 app.use(helmet());
 app.use("/static", express.static("assets", { maxAge: 3600000 }));
