@@ -1,5 +1,8 @@
 const puppeteer = require("puppeteer");
 
+const r18VideoUrl = "https://www.r18.com/common/search/searchword=";
+const javHDVideoUrl = "https://www2.javhdporn.net/video/";
+
 async function scrapeR18(code) {
   const movie = {};
   const movieId = code.toLowerCase();
@@ -13,7 +16,7 @@ async function scrapeR18(code) {
   // begin scraping
   // scrape - 1 (Search and get movie link)
   let page = await browser.newPage();
-  await page.goto(`https://www.r18.com/common/search/searchword=${movieId}/`);
+  await page.goto(`${r18VideoUrl}${movieId}/`);
   try {
     await page.waitForSelector(searchPage, { timeout: 7000 });
 
@@ -51,6 +54,24 @@ async function scrapeR18(code) {
   browser.close();
   console.log(console.log("Scraping R18 ========> ", movie));
   return movie;
+}
+
+async function scrapeJavHD(code) {
+  const movieId = code.toLowerCase();
+  const searchPage = "ul.cmn-list-product01 > li.item-list > a";
+  const videoPoster = "iframe";
+  const videoLink = "video > source";
+
+  browser = await puppeteer.launch({ args: ["--no-sandbox"] });
+  // begin scraping
+  // scrape - 1 (Search and get movie link)
+  let page = await browser.newPage();
+  await page.goto(`${javHDVideoUrl}${movieId}/`);
+  try {
+    await page.waitForSelector(searchPage, { timeout: 7000 });
+  } catch (e) {
+    console.log("Error while scraping: ", e);
+  }
 }
 
 module.exports = scrapeR18;

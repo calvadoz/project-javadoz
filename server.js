@@ -7,7 +7,7 @@ const app = express();
 const initDiscordBot = require("./discord");
 const axios = require("axios");
 const javbus = require("node-javbus")();
-const videoUrl = "https://www2.javhdporn.net/video/";
+
 // const corsOptions = {
 //   origin: "http://localhost:3000",
 //   credentials: true,
@@ -57,7 +57,7 @@ app.get("/api/get-version", async (req, res) => {
 
 app.get("/api/get-movie-metadata", async (req, res) => {
   const movieId = req.query.movieId;
-  const movieDetails = await getSingleMovie(movieId, isLocal);
+  const movieDetails = await getSingleMovie(movieId);
   res.send(movieDetails);
 });
 
