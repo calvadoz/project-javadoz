@@ -84,4 +84,4 @@ async function updateData() {
 app.listen(process.env.PORT || 4000, () => console.log("Server is running"));
 // updateData();
 // scrapeR18('pfes-055');
-// initDiscordBot();
+ initDiscordBot();
