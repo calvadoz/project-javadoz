@@ -38,7 +38,9 @@ const initDiscordBot = () => {
       // spam prevention
       talkedRecently.add("false");
       if (talkedRecently.has("true")) {
-        msg.channel.send("Calm down, please wait 10 seconds before next request !");
+        msg.channel.send(
+          "Calm down, please wait 10 seconds before next request !"
+        );
       } else {
         talkedRecently.add("true");
         setTimeout(() => {
@@ -98,7 +100,7 @@ const initDiscordBot = () => {
                 }
               );
             } catch (e) {
-              console.log(e);
+              console.log("Error: ", e);
             }
           } catch (e) {
             msg.channel.send(
