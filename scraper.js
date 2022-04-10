@@ -2,6 +2,7 @@ const puppeteer = require("puppeteer");
 
 const r18VideoUrl = "https://www.r18.com/common/search/searchword=";
 const javHDVideoUrl = "https://www2.javhdporn.net/video/";
+const javDatabaseUrl = "https://www.javdatabase.com/idols/";
 
 async function scrapeR18(code) {
   console.log("Start Scraping Movie =========> ", code);
@@ -152,3 +153,4 @@ async function scrapeJavHD(code) {
 
 module.exports.scrapeJavHD = scrapeJavHD;
 module.exports.scrapeR18 = scrapeR18;
+module.exports.scrapeR18Actress = scrapeR18Actress;

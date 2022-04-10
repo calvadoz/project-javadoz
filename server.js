@@ -7,7 +7,7 @@ const app = express();
 
 const initDiscordBot = require("./discord");
 const axios = require("axios");
-const { scrapeJavHD, scrapeR18 } = require("./scraper");
+const { scrapeJavHD, scrapeR18, scrapeR18Actress } = require("./scraper");
 
 var allowedOrigins = ["http://localhost:3000", "https://calvadoz.github.io"];
 app.use(
@@ -48,6 +48,13 @@ app.get("/api/get-movie-metadata", async (req, res) => {
   const movieId = req.query.movieId;
   const movieDetails = await getSingleMovie(movieId);
   res.send(movieDetails);
+});
+
+app.get("/api/get-actress-details", async (req, res) => {
+  const actressName = req.query.name;
+  const actressR18Url = req.query.url;
+  // const movieDetails = await getSingleMovie(movieId);
+  res.send(actressName + "-" + actressR18Url);
 });
 
 async function getSingleMovie(code) {
