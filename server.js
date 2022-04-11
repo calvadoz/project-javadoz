@@ -139,4 +139,5 @@ async function updateData() {
 
 app.listen(process.env.PORT || 4000, () => console.log("Server is running"));
 // updateData();
+// scrapeJavDbActress('naruha-sakai');
 initDiscordBot();

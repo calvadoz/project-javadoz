@@ -154,7 +154,7 @@ async function scrapeJavDbActress(actressName) {
     let page = await browser.newPage();
     await page.goto(javDbUrl);
     // get picture
-    const javDbPhotoEl = await page.$x(photoXPath, { timeout: 5000 });
+    const javDbPhotoEl = await page.$x(photoXPath);
     const javDbPhoto = await page.evaluate((el) => el.src, javDbPhotoEl[0]);
     console.log("Getting photo: ", javDbPhoto);
     // get name
