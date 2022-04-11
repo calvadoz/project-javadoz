@@ -86,7 +86,7 @@ const initDiscordBot = () => {
               if (r18movieReq.poster && r18movieReq.trailer) {
                 console.log("Pushing movies..." + randomCodeFromPage.id);
                 await axios.post(
-                  process.env.FIREBASE_URL + "jav-movies-db.json",
+                  process.env.FIREBASE_URL + "jav-movies-database.json",
                   {
                     guid: uuidv4(),
                     movieId: randomCodeFromPage.id,

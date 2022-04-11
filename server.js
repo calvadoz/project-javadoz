@@ -102,14 +102,16 @@ async function updateData() {
   //   dataList.push(data[key]);
   // }
   // dataList = dataList.slice(
-  //   dataList.findIndex((x) => x.movieId === "SDJS-140"),
+  //   dataList.findIndex((x) => x.movieId === "WFR-020"),
   //   dataList.length
   // );
+
   // console.log(dataList.length);
   // const allMovies = await axios.get(
   //   process.env.FIREBASE_URL + "jav-movies-db.json"
   // );
   // const data = allMovies.data;
+
   // let i = 0;
   // for (let testD of dataList) {
   //   const r18metadata = await scrapeR18(testD.movieId);
