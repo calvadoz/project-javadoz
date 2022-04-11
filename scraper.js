@@ -154,9 +154,9 @@ async function scrapeJavDbActress(actressName) {
     let page = await browser.newPage();
     await page.goto(javDbUrl);
     // get picture
-    const javDbPhotoEl = await page.$x(photoXPath);
-    const javDbPhoto = await page.evaluate((el) => el.src, javDbPhotoEl[0]);
-    console.log("Getting photo: ", javDbPhoto);
+    // const javDbPhotoEl = await page.$x(photoXPath);
+    // const javDbPhoto = await page.evaluate((el) => el.src, javDbPhotoEl[0]);
+    // console.log("Getting photo: ", javDbPhoto);
     // get name
     const javDbNameEl = await page.$x(nameXPath, { timeout: 5000 });
     const javDbName = await page.evaluate(
@@ -211,7 +211,7 @@ async function scrapeJavDbActress(actressName) {
     );
     console.log("Getting twitter: ", javDbTwitter);
 
-    actressDetails.photo = javDbPhoto;
+    actressDetails.photo = `https://www.javdatabase.com/idolimages/full/${actressName}.webp`;
     actressDetails.name = javDbName;
     actressDetails.dob = javDbDob;
     actressDetails.height = javDbHeight;
