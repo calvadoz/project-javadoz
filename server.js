@@ -112,7 +112,7 @@ async function updateData() {
   //   process.env.FIREBASE_URL + "jav-movies-db.json"
   // );
   // const data = allMovies.data;
-  
+
   // let i = 0;
   // for (let testD of dataList) {
   //   const r18metadata = await scrapeR18(testD.movieId);
@@ -139,14 +139,5 @@ async function updateData() {
 }
 
 app.listen(process.env.PORT || 4000, () => console.log("Server is running"));
-updateData();
-
-// getActressDetails(
-//   "ena-satsuki",
-//   "https%3A%2F%2Fwww.r18.com%2Fvideos%2Fvod%2Fmovies%2Flist%2F%3Fid%3D1064143%26type%3Dactress"
-// );
-// scrapeJavDbActress("Ena Satsuki");
-// scrapeR18Actress(
-//   "https%3A%2F%2Fwww.r18.com%2Fvideos%2Fvod%2Fmovies%2Flist%2F%3Fid%3D1064143%26type%3Dactress"
-// );
-// initDiscordBot();
+// updateData();
+initDiscordBot();
