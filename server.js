@@ -59,6 +59,7 @@ app.get("/api/get-actress-details", async (req, res) => {
   const actressName = req.query.name;
   const actressR18Url = req.query.url;
   const scrapeResult = await getActressDetails(actressName, actressR18Url);
+  console.log(scrapeResult);
   res.send(scrapeResult);
 });
 
@@ -100,19 +101,15 @@ async function updateData() {
   // for (const key in data) {
   //   dataList.push(data[key]);
   // }
-
   // dataList = dataList.slice(
   //   dataList.findIndex((x) => x.movieId === "SDJS-140"),
   //   dataList.length
   // );
-
   // console.log(dataList.length);
-
   // const allMovies = await axios.get(
   //   process.env.FIREBASE_URL + "jav-movies-db.json"
   // );
   // const data = allMovies.data;
-
   // let i = 0;
   // for (let testD of dataList) {
   //   const r18metadata = await scrapeR18(testD.movieId);

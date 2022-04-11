@@ -137,16 +137,16 @@ async function scrapeJavDbActress(actressName) {
   // Jav Database XPath Collections
   const photoXPath = '//*[@id="content"]/div[2]/div[1]/a/img';
   const nameXPath = '//*[@id="content"]/div[2]/div[2]/table/tbody/tr[1]/td[2]';
-  const dobXPath = '//*[@id="content"]/div[2]/div[2]/table/tbody/tr[5]/td[2]/a';
+  const dobXPath = '//*[@id="content"]/div[2]/div[2]/table/tbody/tr[5]/td[2]';
   const heightXPath =
-    '//*[@id="content"]/div[2]/div[2]/table/tbody/tr[8]/td[2]/a';
-  const cupXPath = '//*[@id="content"]/div[2]/div[2]/table/tbody/tr[9]/td[2]/a';
+    '//*[@id="content"]/div[2]/div[2]/table/tbody/tr[8]/td[2]';
+  const cupXPath = '//*[@id="content"]/div[2]/div[2]/table/tbody/tr[9]/td[2]';
   const measurementXPath =
     '//*[@id="content"]/div[2]/div[2]/table/tbody/tr[10]/td[2]';
   const bodyTypeXPath =
     '//*[@id="content"]/div[2]/div[2]/table/tbody/tr[12]/td[2]';
   const twitterXPath =
-    '//*[@id="content"]/div[2]/div[2]/table/tbody/tr[20]/td[2]/a';
+    '//*[@id="content"]/div[2]/div[2]/table/tbody/tr[20]/td[2]';
 
   console.log("Start Scraping Jav Database URL =========> ", javDbUrl);
   try {
@@ -156,27 +156,29 @@ async function scrapeJavDbActress(actressName) {
     // get picture
     const javDbPhotoEl = await page.$x(photoXPath, { timeout: 5000 });
     const javDbPhoto = await page.evaluate((el) => el.src, javDbPhotoEl[0]);
+    console.log("Getting photo: ", javDbPhoto);
     // get name
     const javDbNameEl = await page.$x(nameXPath, { timeout: 5000 });
     const javDbName = await page.evaluate(
       (el) => el.textContent,
       javDbNameEl[0]
     );
+    console.log("Getting Name: ", javDbName);
     // get dob
     const javDbDobEl = await page.$x(dobXPath, { timeout: 5000 });
     const javDbDob = await page.evaluate((el) => el.innerText, javDbDobEl[0]);
-
+    console.log("Getting photo: ", javDbDob);
     // get dob
     const javDbHeightEl = await page.$x(heightXPath, { timeout: 5000 });
     const javDbHeight = await page.evaluate(
       (el) => el.innerText,
       javDbHeightEl[0]
     );
-
+    console.log("Getting height: ", javDbHeight);
     // get cup
     const javDbCupEl = await page.$x(cupXPath, { timeout: 5000 });
     const javDbCup = await page.evaluate((el) => el.innerText, javDbCupEl[0]);
-
+    console.log("Getting cup: ", javDbCup);
     // get measurement
     const javDbMeasurementEl = await page.$x(measurementXPath, {
       timeout: 5000,
@@ -185,6 +187,7 @@ async function scrapeJavDbActress(actressName) {
       (el) => el.textContent,
       javDbMeasurementEl[0]
     );
+    console.log("Getting measurement: ", javDbMeasurement);
 
     // get body type array
     const javDbBodyTypeEl = await page.$x(bodyTypeXPath, { timeout: 5000 });
@@ -196,8 +199,9 @@ async function scrapeJavDbActress(actressName) {
       }
       return bodyTypeList;
     }, javDbBodyTypeEl[0]);
+    console.log("Getting body type: ", javDbBodyTypes);
 
-    // get measurement
+    // get twitter
     const javDbTwitterEl = await page.$x(twitterXPath, {
       timeout: 1000,
     });
@@ -205,6 +209,7 @@ async function scrapeJavDbActress(actressName) {
       (el) => el.textContent,
       javDbTwitterEl[0]
     );
+    console.log("Getting twitter: ", javDbTwitter);
 
     actressDetails.photo = javDbPhoto;
     actressDetails.name = javDbName;
@@ -213,16 +218,18 @@ async function scrapeJavDbActress(actressName) {
     actressDetails.cup = javDbCup;
     actressDetails.measurement = javDbMeasurement;
     actressDetails.bodyTypes = javDbBodyTypes;
-    actressDetails.twitter = javDbTwitter;
+    actressDetails.twitter = javDbTwitter.replace("\n", "");
   } catch (e) {
+    console.log("Error while scrapping jav database ", e);
     return null;
   }
   browser.close();
-  //   console.log(actressDetails);
   return actressDetails;
+  //   console.log(actressDetails);
 }
 
 async function scrapeR18Actress(actressUrl) {
+  let r18MovieList = {};
   actressUrl = decodeURIComponent(actressUrl);
 
   // R18 XPath Collection
@@ -235,7 +242,7 @@ async function scrapeR18Actress(actressUrl) {
     await page.goto(actressUrl);
     // get Actresses + Actress URL
     const r18MovieListEl = await page.$x(r18MovieListXPath, { timeout: 5000 });
-    const r18MovieList = await page.evaluate((el) => {
+    r18MovieList = await page.evaluate((el) => {
       const trailerList = [];
       const actressInnerList = el.querySelectorAll("li");
       for (const el of actressInnerList) {
@@ -251,6 +258,7 @@ async function scrapeR18Actress(actressUrl) {
     }, r18MovieListEl[0]);
     // console.log(r18MovieList);
   } catch (e) {
+    console.log("Error while scrapping R18 actress ", e);
     return null;
   }
   browser.close();
