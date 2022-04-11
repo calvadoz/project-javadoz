@@ -7,7 +7,12 @@ const app = express();
 
 const initDiscordBot = require("./discord");
 const axios = require("axios");
-const { scrapeJavHD, scrapeR18, scrapeR18Actress } = require("./scraper");
+const {
+  scrapeJavHD,
+  scrapeR18,
+  scrapeR18Actress,
+  scrapeJavDbActress,
+} = require("./scraper");
 
 var allowedOrigins = ["http://localhost:3000", "https://calvadoz.github.io"];
 app.use(
@@ -53,9 +58,26 @@ app.get("/api/get-movie-metadata", async (req, res) => {
 app.get("/api/get-actress-details", async (req, res) => {
   const actressName = req.query.name;
   const actressR18Url = req.query.url;
-  // const movieDetails = await getSingleMovie(movieId);
-  res.send(actressName + "-" + actressR18Url);
+  const scrapeResult = await getActressDetails(actressName, actressR18Url);
+  res.send(scrapeResult);
 });
+
+async function getActressDetails(actressName, url) {
+  let actressDetails = [];
+  try {
+    const javDbResult = await scrapeJavDbActress(actressName);
+    actressDetails = javDbResult;
+    const r18Result = await scrapeR18Actress(url);
+    if (r18Result.length <= 15) {
+      actressDetails.trailers = r18Result;
+    } else {
+      actressDetails.trailers = r18Result.slice(0, 15);
+    }
+    return actressDetails;
+  } catch (err) {
+    return null;
+  }
+}
 
 async function getSingleMovie(code) {
   let movie = {};
@@ -70,25 +92,61 @@ async function getSingleMovie(code) {
 
 // migrate data from one document to another
 async function updateData() {
-  const allMovies = await axios.get(
-    process.env.FIREBASE_URL + "jav-movies-database.json"
-  );
-  const data = allMovies.data;
-  for (const key in data) {
-    await axios.post(process.env.FIREBASE_URL + "jav-movies-db.json", {
-      guid: uuidv4(),
-      movieId: data[key].movieId,
-      requester: data[key].requester,
-      timestamp: data[key].timestamp,
-      trailer: data[key].trailer,
-      thumbnail: data[key].thumbnail,
-      watchCount: 0,
-    });
-    console.log("Pushed movies: ", data[key].movieId);
-  }
+  // const allMovies = await axios.get(
+  //   process.env.FIREBASE_URL + "jav-movies-db.json"
+  // );
+  // const data = allMovies.data;
+  // let dataList = [];
+  // for (const key in data) {
+  //   dataList.push(data[key]);
+  // }
+
+  // dataList = dataList.slice(
+  //   dataList.findIndex((x) => x.movieId === "SDJS-140"),
+  //   dataList.length
+  // );
+
+  // console.log(dataList.length);
+
+  // const allMovies = await axios.get(
+  //   process.env.FIREBASE_URL + "jav-movies-db.json"
+  // );
+  // const data = allMovies.data;
+  
+  // let i = 0;
+  // for (let testD of dataList) {
+  //   const r18metadata = await scrapeR18(testD.movieId);
+  //   if (r18metadata.poster) {
+  //     await axios.post(process.env.FIREBASE_URL + "jav-movies-database.json", {
+  //       guid: uuidv4(),
+  //       movieId: testD.movieId,
+  //       requester: testD.requester,
+  //       timestamp: testD.timestamp,
+  //       trailer: testD.trailer,
+  //       thumbnail: testD.thumbnail,
+  //       watchCount: testD.watchCount,
+  //       actresses: r18metadata.actresses,
+  //       genres: r18metadata.genres,
+  //       studio: r18metadata.studio,
+  //       title: r18metadata.title,
+  //       releaseDate: r18metadata.releaseDate,
+  //       length: r18metadata.length,
+  //     });
+  //     console.log("Pushed movies: ", testD.movieId);
+  //     console.log("Current Index: ", i++);
+  //   }
+  // }
 }
 
 app.listen(process.env.PORT || 4000, () => console.log("Server is running"));
-// updateData();
-// scrapeR18('pfes-055');
- initDiscordBot();
+updateData();
+
+// getActressDetails(
+//   "ena-satsuki",
+//   "https%3A%2F%2Fwww.r18.com%2Fvideos%2Fvod%2Fmovies%2Flist%2F%3Fid%3D1064143%26type%3Dactress"
+// );
+// scrapeJavDbActress("Ena Satsuki");
+// scrapeR18Actress(
+//   "https%3A%2F%2Fwww.r18.com%2Fvideos%2Fvod%2Fmovies%2Flist%2F%3Fid%3D1064143%26type%3Dactress"
+// );
+// initDiscordBot();

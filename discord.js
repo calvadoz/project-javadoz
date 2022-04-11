@@ -83,22 +83,29 @@ const initDiscordBot = () => {
             // send to firebase
             try {
               const r18movieReq = await scrapeR18(randomCodeFromPage.id);
-              console.log("Pushing movies..." + randomCodeFromPage.id);
-              await axios.post(
-                process.env.FIREBASE_URL + "jav-movies-db.json",
-                {
-                  guid: uuidv4(),
-                  movieId: randomCodeFromPage.id,
-                  requester:
-                    msg.author.username + "#" + msg.author.discriminator,
-                  timestamp: new Date(),
-                  trailer:
-                    r18movieReq.trailer !== null ? r18movieReq.trailer : null,
-                  thumbnail:
-                    r18movieReq.poster !== null ? r18movieReq.poster : null,
-                  watchCount: 0,
-                }
-              );
+              if (r18movieReq.poster && r18movieReq.trailer) {
+                console.log("Pushing movies..." + randomCodeFromPage.id);
+                await axios.post(
+                  process.env.FIREBASE_URL + "jav-movies-db.json",
+                  {
+                    guid: uuidv4(),
+                    movieId: randomCodeFromPage.id,
+                    requester:
+                      msg.author.username + "#" + msg.author.discriminator,
+                    timestamp: new Date(),
+                    trailer:
+                      r18movieReq.trailer !== null ? r18movieReq.trailer : null,
+                    thumbnail:
+                      r18movieReq.poster !== null ? r18movieReq.poster : null,
+                    watchCount: 0,
+                    actresses: r18movieReq.actresses,
+                    genres: r18movieReq.genres,
+                    studio: r18movieReq.studio,
+                  }
+                );
+              } else {
+                console.log("Movie not found on r18... Skipping ", randomCodeFromPage.id);
+              }
             } catch (e) {
               console.log("Error: ", e);
             }

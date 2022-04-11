@@ -129,8 +129,132 @@ async function scrapeR18(code) {
   return movie;
 }
 
+async function scrapeJavDbActress(actressName) {
+  let actressDetails = {};
+  //   actressName = actressName.toLowerCase().split(" ").join("-");
+  const javDbUrl = `${javDatabaseUrl}${actressName}/`;
+
+  // Jav Database XPath Collections
+  const photoXPath = '//*[@id="content"]/div[2]/div[1]/a/img';
+  const nameXPath = '//*[@id="content"]/div[2]/div[2]/table/tbody/tr[1]/td[2]';
+  const dobXPath = '//*[@id="content"]/div[2]/div[2]/table/tbody/tr[5]/td[2]/a';
+  const heightXPath =
+    '//*[@id="content"]/div[2]/div[2]/table/tbody/tr[8]/td[2]/a';
+  const cupXPath = '//*[@id="content"]/div[2]/div[2]/table/tbody/tr[9]/td[2]/a';
+  const measurementXPath =
+    '//*[@id="content"]/div[2]/div[2]/table/tbody/tr[10]/td[2]';
+  const bodyTypeXPath =
+    '//*[@id="content"]/div[2]/div[2]/table/tbody/tr[12]/td[2]';
+  const twitterXPath =
+    '//*[@id="content"]/div[2]/div[2]/table/tbody/tr[20]/td[2]/a';
+
+  console.log("Start Scraping Jav Database URL =========> ", javDbUrl);
+  try {
+    browser = await puppeteer.launch({ args: ["--no-sandbox"] });
+    let page = await browser.newPage();
+    await page.goto(javDbUrl);
+    // get picture
+    const javDbPhotoEl = await page.$x(photoXPath, { timeout: 5000 });
+    const javDbPhoto = await page.evaluate((el) => el.src, javDbPhotoEl[0]);
+    // get name
+    const javDbNameEl = await page.$x(nameXPath, { timeout: 5000 });
+    const javDbName = await page.evaluate(
+      (el) => el.textContent,
+      javDbNameEl[0]
+    );
+    // get dob
+    const javDbDobEl = await page.$x(dobXPath, { timeout: 5000 });
+    const javDbDob = await page.evaluate((el) => el.innerText, javDbDobEl[0]);
+
+    // get dob
+    const javDbHeightEl = await page.$x(heightXPath, { timeout: 5000 });
+    const javDbHeight = await page.evaluate(
+      (el) => el.innerText,
+      javDbHeightEl[0]
+    );
+
+    // get cup
+    const javDbCupEl = await page.$x(cupXPath, { timeout: 5000 });
+    const javDbCup = await page.evaluate((el) => el.innerText, javDbCupEl[0]);
+
+    // get measurement
+    const javDbMeasurementEl = await page.$x(measurementXPath, {
+      timeout: 5000,
+    });
+    const javDbMeasurement = await page.evaluate(
+      (el) => el.textContent,
+      javDbMeasurementEl[0]
+    );
+
+    // get body type array
+    const javDbBodyTypeEl = await page.$x(bodyTypeXPath, { timeout: 5000 });
+    const javDbBodyTypes = await page.evaluate((el) => {
+      const bodyTypeList = [];
+      const bodyTypeInnerList = el.querySelectorAll("a");
+      for (const el of bodyTypeInnerList) {
+        bodyTypeList.push(el.innerText.trim());
+      }
+      return bodyTypeList;
+    }, javDbBodyTypeEl[0]);
+
+    // get measurement
+    const javDbTwitterEl = await page.$x(twitterXPath, {
+      timeout: 1000,
+    });
+    const javDbTwitter = await page.evaluate(
+      (el) => el.textContent,
+      javDbTwitterEl[0]
+    );
+
+    actressDetails.photo = javDbPhoto;
+    actressDetails.name = javDbName;
+    actressDetails.dob = javDbDob;
+    actressDetails.height = javDbHeight;
+    actressDetails.cup = javDbCup;
+    actressDetails.measurement = javDbMeasurement;
+    actressDetails.bodyTypes = javDbBodyTypes;
+    actressDetails.twitter = javDbTwitter;
+  } catch (e) {
+    return null;
+  }
+  browser.close();
+  //   console.log(actressDetails);
+  return actressDetails;
+}
+
 async function scrapeR18Actress(actressUrl) {
+  actressUrl = decodeURIComponent(actressUrl);
+
+  // R18 XPath Collection
+  const r18MovieListXPath = '//*[@id="contents"]/div[2]/section/ul[2]';
+
   console.log("Start Scraping R18 Actress URL =========> ", actressUrl);
+  try {
+    browser = await puppeteer.launch({ args: ["--no-sandbox"] });
+    let page = await browser.newPage();
+    await page.goto(actressUrl);
+    // get Actresses + Actress URL
+    const r18MovieListEl = await page.$x(r18MovieListXPath, { timeout: 5000 });
+    const r18MovieList = await page.evaluate((el) => {
+      const trailerList = [];
+      const actressInnerList = el.querySelectorAll("li");
+      for (const el of actressInnerList) {
+        const linkEl = el.querySelector("a ");
+        const imgEl = el.querySelector("a > p > img");
+        trailerList.push({
+          id: imgEl.alt,
+          thumbnail: imgEl.src,
+          trailer: linkEl.href,
+        });
+      }
+      return trailerList;
+    }, r18MovieListEl[0]);
+    // console.log(r18MovieList);
+  } catch (e) {
+    return null;
+  }
+  browser.close();
+  return r18MovieList;
 }
 
 async function scrapeJavHD(code) {
@@ -144,8 +268,10 @@ async function scrapeJavHD(code) {
   let page = await browser.newPage();
   await page.goto(pageUrl);
   try {
-    await page.waitForSelector(videoPlayer, { timeout: 3000 });
-    return pageUrl;
+    const r18MoviePoster = await page.$$eval(
+      videoPoster,
+      (elems) => elems.map((el) => el.src)[0]
+    );
   } catch (e) {
     return null;
   }
@@ -154,3 +280,4 @@ async function scrapeJavHD(code) {
 module.exports.scrapeJavHD = scrapeJavHD;
 module.exports.scrapeR18 = scrapeR18;
 module.exports.scrapeR18Actress = scrapeR18Actress;
+module.exports.scrapeJavDbActress = scrapeJavDbActress;
