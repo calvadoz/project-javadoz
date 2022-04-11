@@ -102,7 +102,8 @@ const initDiscordBot = () => {
                     genres: r18movieReq.genres,
                     studio: r18movieReq.studio,
                     length: r18movieReq.length,
-                    title: r18movieReq.title
+                    title: r18movieReq.title,
+                    releaseDate: r18movieReq.releaseDate
                   }
                 );
               } else {
