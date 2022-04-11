@@ -101,6 +101,7 @@ const initDiscordBot = () => {
                     actresses: r18movieReq.actresses,
                     genres: r18movieReq.genres,
                     studio: r18movieReq.studio,
+                    length: r18movieReq.length
                   }
                 );
               } else {
