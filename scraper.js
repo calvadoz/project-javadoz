@@ -9,6 +9,7 @@ async function scrapeR18(code) {
   const movie = {};
   const movieId = code.toLowerCase();
   const searchPage = "ul.cmn-list-product01 > li.item-list > a";
+  const videoPosterIframe = "iframe";
   const videoPoster = "meta[property='og:image']";
   const videoLink = "video > source";
   //   const posterXPath = "/html/head/meta[9]/@content";
@@ -45,10 +46,18 @@ async function scrapeR18(code) {
     await page.waitForSelector(videoLink, { timeout: 5000 });
 
     // get poster
-    const r18MoviePoster = await page.$$eval(
-      videoPoster,
-      (elems) => elems.map((el) => el.getAttribute("content"))[0]
+    let r18MoviePoster = await page.$$eval(
+      videoPosterIframe,
+      (elems) => elems.map((el) => el.src)[0]
     );
+    if (r18MoviePoster) {
+      r18MoviePoster = r18MoviePoster.split("&")[1].replace("poster=", "");
+    } else {
+      r18MoviePoster = await page.$$eval(
+        videoPoster,
+        (elems) => elems.map((el) => el.getAttribute("content"))[0]
+      );
+    }
 
     // get trailer
     const r18TrailerLink = await page.$$eval(
