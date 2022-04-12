@@ -9,8 +9,9 @@ async function scrapeR18(code) {
   const movie = {};
   const movieId = code.toLowerCase();
   const searchPage = "ul.cmn-list-product01 > li.item-list > a";
-  const videoPoster = "iframe";
+  const videoPoster = "meta[property='og:image']";
   const videoLink = "video > source";
+  //   const posterXPath = "/html/head/meta[9]/@content";
   const titleXPath =
     '//*[@id="root"]/div/div/div[1]/div/div[1]/div[2]/div[1]/h1';
   const actressesXPath =
@@ -46,7 +47,7 @@ async function scrapeR18(code) {
     // get poster
     const r18MoviePoster = await page.$$eval(
       videoPoster,
-      (elems) => elems.map((el) => el.src)[0]
+      (elems) => elems.map((el) => el.getAttribute("content"))[0]
     );
 
     // get trailer
@@ -104,8 +105,11 @@ async function scrapeR18(code) {
     );
     // get HD trailer if available
     movie.id = code.toUpperCase();
-    movie.trailer = r18TrailerLink.replace("_sm_", "_dmb_");
-    movie.poster = r18MoviePoster.split("&")[1].replace("poster=", "");
+    movie.trailer = r18TrailerLink.includes("_sm_")
+      ? r18TrailerLink.replace("_sm_", "_dmb_")
+      : r18TrailerLink;
+    // movie.poster = r18Poster;
+    movie.poster = r18MoviePoster;
     movie.title = r18Title.trim();
     movie.actresses = r18Actresses;
     movie.genres = r18Categories;
