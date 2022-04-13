@@ -41,6 +41,7 @@ const initDiscordBot = () => {
         msg.channel.send(
           "Calm down, please wait 10 seconds before next request !"
         );
+        return;
       } else {
         talkedRecently.add("true");
         setTimeout(() => {
