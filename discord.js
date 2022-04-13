@@ -28,8 +28,9 @@ const initDiscordBot = () => {
       msg.channel.send("Trying to wake the bot up...");
       try {
         await axios.get(
-          "https://project-javadoz.herokuapp.com/api/healthcheck"
+          "https://project-javadoz-server.herokuapp.com/api/healthcheck"
         );
+        msg.channel.send("Bot is awake... reporting for duty");
       } catch (e) {
         msg.channel.send("Bot is deadge, please DM Calvadoz...");
       }
@@ -46,6 +47,9 @@ const initDiscordBot = () => {
         talkedRecently.add("true");
         setTimeout(() => {
           talkedRecently.delete("true");
+          msg.channel.send(
+            "!cotd is ready, please request again..."
+          );
         }, 10000);
       }
       // if (talkedRecently.has(msg.author.id)) {
