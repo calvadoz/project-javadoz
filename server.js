@@ -31,7 +31,11 @@ var allowedOrigins = ["http://localhost:3000", "https://calvadoz.github.io"];
 //     },
 //   })
 // );
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:3000", "https://calvadoz.github.io"],
+  })
+);
 app.use(express.json());
 app.use(helmet());
 app.use("/static", express.static("assets", { maxAge: 3600000 }));
@@ -105,13 +109,11 @@ async function updateData() {
   //   dataList.findIndex((x) => x.movieId === "WFR-020"),
   //   dataList.length
   // );
-
   // console.log(dataList.length);
   // const allMovies = await axios.get(
   //   process.env.FIREBASE_URL + "jav-movies-db.json"
   // );
   // const data = allMovies.data;
-
   // let i = 0;
   // for (let testD of dataList) {
   //   const r18metadata = await scrapeR18(testD.movieId);
