@@ -86,8 +86,12 @@ async function scrapeR18(code) {
     const r18Categories = await page.evaluate((el) => {
       const categoryList = [];
       const categoryInnerList = el.querySelectorAll("span");
-      for (const el of categoryInnerList) {
-        categoryList.push(el.innerText.trim());
+      if (categoryInnerList) {
+        for (const el of categoryInnerList) {
+          categoryList.push(el.innerText.trim());
+        }
+      } else {
+        return [];
       }
       return categoryList;
     }, r18CategoriesEl[0]);
