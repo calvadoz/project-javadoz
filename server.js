@@ -33,7 +33,7 @@ var allowedOrigins = ["http://localhost:3000", "https://calvadoz.github.io"];
 // );
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://calvadoz.github.io"],
+    origin: "*",
   })
 );
 app.use(express.json());
