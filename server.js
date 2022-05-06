@@ -1,4 +1,5 @@
 require("dotenv").config();
+const javbus = require("node-javbus")();
 const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
@@ -59,6 +60,14 @@ app.get("/api/get-actress-details", async (req, res) => {
   console.log(scrapeResult);
   res.send(scrapeResult);
 });
+
+app.get("/api/get-random-movie", async (req, res) => {
+  const pageResults = await fetchFromJavBus();
+  const randomCodeFromPage = randomizeAndFetch(pageResults);
+  if (randomCodeFromPage) {
+    res.send(randomCodeFromPage.id);
+  }
+})
 
 async function getActressDetails(actressName, url) {
   let actressDetails = [];
@@ -132,7 +141,30 @@ async function updateData() {
   // }
 }
 
+function fetchFromJavBus() {
+  let randomPage = randomizeAndFetchRandomPage();
+  randomPage = randomPage === 0 ? 1 : randomPage;
+  try {
+    return javbus.page(randomPage);
+  } catch (e) {
+    throw new error("Got error la", e.message);
+  }
+}
+
+function randomizeAndFetchRandomPage() {
+  return Math.floor(Math.random() * 150);
+}
+
+function randomizeAndFetch(codes) {
+  if (codes) {
+    const randomLine = Math.floor(Math.random() * codes.length); // Math.floor(0 - 1 * 2000xx)
+    return codes[randomLine];
+  }
+  return "Bo code liao...";
+}
+
 app.listen(process.env.PORT || 4000, () => console.log("Server is running"));
+// test();
 // updateData();
 // scrapeJavDbActress('naruha-sakai');
 initDiscordBot();
